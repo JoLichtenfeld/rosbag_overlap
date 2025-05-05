@@ -18,12 +18,13 @@ setup(
     install_requires=['setuptools'],
     zip_safe=True,
     maintainer='root',
-    maintainer_email='root@todo.todo',
+    maintainer_email='lichtenfeld@sim.tu-darmstadt.de',
     description='TODO: Package description',
     license='TODO: License declaration',
     tests_require=['pytest'],
     entry_points={
         'console_scripts':
-        ['rosbag_overlap = rosbag_overlap.rosbag_overlap:main'],
+        ['rosbag_overlap = rosbag_overlap.rosbag_overlap:main',
+         'split = rosbag_overlap.split:main',],
     },
 )

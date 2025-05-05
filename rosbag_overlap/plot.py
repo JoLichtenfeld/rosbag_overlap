@@ -8,7 +8,7 @@ from typing import List, Tuple
 def plot_bag_time_ranges(bag_ranges: List[Tuple[datetime, datetime, str]]) -> None:
 
     # Sort by name and then by start time
-    bag_ranges.sort(key=lambda x: (os.path.basename(x[2]), x[0]))
+    bag_ranges.sort(key=lambda x: (x[2], x[0]))
 
     fig_height = max(4, len(bag_ranges) * 1.2)
     fig, ax = plt.subplots(figsize=(12, fig_height))
@@ -52,9 +52,7 @@ def plot_bag_time_ranges(bag_ranges: List[Tuple[datetime, datetime, str]]) -> No
 
     ax.set_xlim(xmin - xmargin, xmax + xmargin)
     ax.set_yticks(range(len(bag_ranges)))
-    ax.set_yticklabels(
-        [os.path.basename(label.rstrip("/")) for _, _, label in bag_ranges]
-    )
+    ax.set_yticklabels([label for _, _, label in bag_ranges])
     ax.invert_yaxis()
     ax.set_xlabel("Time")
     ax.set_title("ROS Bag File Time Ranges")

@@ -172,6 +172,8 @@ class RosbagOverlap(Node):
             else:
                 for item in os.listdir(path):
                     item_path = os.path.join(path, item)
+                    if not os.path.isdir(item_path):
+                        continue
                     find_bag_files_recursively(item_path, n - 1)
 
         for path in paths:
@@ -307,16 +309,24 @@ class RosbagOverlap(Node):
             writer.create_topic(topic)
 
         # Copy messages within overlap period
-        msg_count = 0
+        copied_msg_count = 0
+        skipped_msg_count = 0
         while reader.has_next():
             (topic, data, t) = reader.read_next()
             # t is already in nanoseconds
             if overlap_start.timestamp() * 1e9 <= t <= overlap_end.timestamp() * 1e9:
                 writer.write(topic, data, t)
-                msg_count += 1
-                if msg_count % 1000 == 0:
+                copied_msg_count += 1
+                if copied_msg_count % 1 == 0:
                     print(
-                        f"\rProgress: {msg_count}/{total_msgs} messages ({msg_count/total_msgs*100:.1f}%)",
+                        f"\rProgress: {copied_msg_count}/{total_msgs} messages ({copied_msg_count/total_msgs*100:.1f}%)",
+                        end="",
+                    )
+            else:
+                skipped_msg_count += 1
+                if skipped_msg_count % 1000 == 0:
+                    print(
+                        f"\rSkipped: {skipped_msg_count} messages outside overlap period",
                         end="",
                     )
 
